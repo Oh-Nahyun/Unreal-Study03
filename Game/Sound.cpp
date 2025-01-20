@@ -62,15 +62,15 @@ int main()
 	// PlaySound( 경로;사운드 파일 위치, NULL, 파라미터;SND_FILENAME/SND_ASYNC(재생하면서 다음 코드 진행(BGM))/SND_LOOP(반복 재생) )
 	PlaySound(TEXT("002.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
 
-	Beep(_D, 100);
-	Sleep(200);
+	Beep(_C, 500);		Sleep(200);
+	Beep(_D, 500);		Sleep(200);
+	Beep(_E, 500);		Sleep(200);
 
-	system("pause");
+	system("pause");	// WAV 테스트 시에 일시정지 필요!!
 
 	PlaySound(NULL, 0, 0);
 
-	Beep(_C, 500);
-	Sleep(200);
+	Beep(_C, 500);		Sleep(200);
 
 	system("pause");
 
