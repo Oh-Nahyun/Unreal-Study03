@@ -218,25 +218,48 @@ void playerDelete(int x, int y)
 /// </summary>
 void bulletMove()
 {
+	// 총알 이동
+	for (int i = 0; i < 3; i++)
+	{
+		// 총알 활성화 확인
+		if (Bullet[i].exist)	// Bullet[i].exist == true
+		{
+			// 총알 지우기
+			EraseBullet(i);
 
+			// 총알 범위 계산 (화면을 벗어났는지 체크)
+			if (Bullet[i].y <= 0)
+			{
+				Bullet[i].exist = false;
+			}
+			else
+			{
+				// 총알 출력 (위치 변경 포함)
+				Bullet[i].y--;
+				DrawBullet(i);
+			}
+		}
+	}
 }
 
 /// <summary>
 /// 유저의 총알 출력 함수
 /// </summary>
-/// <param name="i"></param>
+/// <param name="i">총알 인덱스</param>
 void DrawBullet(int i)
 {
-
+	gotoxy(Bullet[i].x, Bullet[i].y);
+	printf("↑");
 }
 
 /// <summary>
 /// 유저의 총알 지우는 함수
 /// </summary>
-/// <param name="i"></param>
+/// <param name="i">총알 인덱스</param>
 void EraseBullet(int i)
 {
-
+	gotoxy(Bullet[i].x, Bullet[i].y);
+	printf("  ");
 }
 
 /// <summary>
@@ -315,10 +338,13 @@ void game()
 
 	// 시간 기록용 변수
 	// (((타이머 (스레드) : 컴퓨터마다 1초의 시간이 달라지면 안되기 때문)))
+	unsigned int prev_time = 0;
 
 	// 보스 이동 플래그 (좌우 이동)
+	int b_move = 0;
 
 	// 총알 인덱스
+	int i = 1;
 
 	// 게임 반복 구간
 	while (true)
@@ -331,12 +357,131 @@ void game()
 		player(User.x * 2, User.y);
 
 		// 총알 처리 & 출력
+		bulletMove();
 
 		// 입력 처리 (플레이어 이동 처리 : 상하좌우)
+		if ((GetAsyncKeyState(VK_UP) & 0x0001) && (2 < User.y))		// 위로 이동 + 화면 이동 제약
+		{
+			playerDelete(User.x * 2, User.y);
+
+			// 좌표 이동
+			User.y--;
+			player(User.x * 2, User.y);
+		}
+		if ((GetAsyncKeyState(VK_DOWN) & 0x0001) && (46 > User.y))	// 아래로 이동 + 화면 이동 제약
+		{
+			playerDelete(User.x * 2, User.y);
+
+			// 좌표 이동
+			User.y++;
+			player(User.x * 2, User.y);
+		}
+		if ((GetAsyncKeyState(VK_LEFT) & 0x0001) && (2 < User.x))	// 왼쪽으로 이동 + 화면 이동 제약
+		{
+			playerDelete(User.x * 2, User.y);
+
+			// 좌표 이동
+			User.x--;
+			player(User.x * 2, User.y);
+		}
+		if ((GetAsyncKeyState(VK_RIGHT) & 0x0001) && (27 > User.x))	// 오른쪽으로 이동 + 화면 이동 제약
+		{
+			playerDelete(User.x * 2, User.y);
+
+			// 좌표 이동
+			User.x++;
+			player(User.x * 2, User.y);
+		}
 
 		// 유저 총알 쏘는 부분 (Space Key)
+		if (GetAsyncKeyState(VK_SPACE) & 0x0001)					// 스페이스 키가 눌린 경우
+		{
+			// 3개의 총알이 발사 중인지 체크
+			//for (i = 0; i < 3; i++)
+			//{
+			//	if (Bullet[i].exist == false) break;
+			//}
+			for (i = 0; i < 3 && Bullet[i].exist; i++)
+			{
+				break;
+			}
+
+			// 3개 중 남은 배열 인덱스가 있을 때만 총알 발사
+			if (i != 3)
+			{
+				Bullet[i].x = User.x * 2;
+				Bullet[i].y = User.y - 2;
+				Bullet[i].exist = true;
+			}
+		}
 
 		// 보스 처리 (1초마다 처리 (NPC))
+		if (time(NULL) - prev_time >= 1)	// 1초마다 실행된다.
+		{
+			prev_time = time(NULL);
+
+			// 1초 테스트
+			gotoxy(14, 1);
+			printf("1970/01/01 이후 초 : %d", prev_time);
+
+			// 보스의 이동 방향 선정 가능 (2(+1)가지 패턴 : 1. 좌로 이동 / 2. 우로 이동 / (3. 총알 발사 = 1초 마다(화면에 총알이 없으면 발사)))
+			// (((State Machine)))
+			b_move = rand() % 2;			// 0이나 1만 나온다. (좌우 선택)
+
+			// 보스 이동 처리 (잔상 지우기 & 외각 영역 처리)
+			if (!b_move && Boss.x > 2)		// 왼쪽으로 이동
+			{
+				bossDelete(Boss.x * 2, Boss.y);
+				Boss.x -= 2;
+				boss(Boss.x * 2, Boss.y);
+			}
+			if (b_move && Boss.x < 22)		// 오른쪽으로 이동
+			{
+				bossDelete(Boss.x * 2, Boss.y);
+				Boss.x += 2;
+				boss(Boss.x * 2, Boss.y);
+			}
+
+			// 보스의 총알 처리
+			if (!Boss.chk)					// 총알이 발사되지 않은 경우 -> 총알 발사!
+			{
+				// 총알의 위치 초기화 (보스의 바로 아래)
+				Boss.bullet.x = Boss.x * 2 + (3 * 2);
+				Boss.bullet.y = BOSS_Y + 7;
+
+				// 총알 출력
+				gotoxy(Boss.bullet.x, Boss.bullet.y);
+				printf("▽");
+
+				// 총알 발사 처리
+				Boss.chk = true;
+			}
+			else if (Boss.chk)				// 총알이 발사된 경우
+			{
+				if (Boss.bullet.y > 46)		// 총알이 화면을 벗어난 경우
+				{
+					// 총알 지우기
+					gotoxy(Boss.bullet.x, Boss.bullet.y);
+					printf("  ");
+
+					// 총알 발사 초기화
+					Boss.chk = false;
+				}
+				else                        // 총알이 계속 아래로 하강
+				{
+					// 총알 지우기
+					gotoxy(Boss.bullet.x, Boss.bullet.y);
+					printf("  ");
+
+					// 위치 증가
+					Boss.bullet.y += 3;
+
+					// 총알 출력
+					gotoxy(Boss.bullet.x, Boss.bullet.y);
+					printf("▽");
+				}
+			}
+		}
 
 		// 게임 딜레이 (전체적인 게임 속도)
 		Sleep(10);
@@ -362,5 +507,4 @@ void help()
 	gotoxy(11, 21);	printf("스페이스 키를 이용하여 적을 공격하세요.");
 
 	gotoxy(13, 25);	system("pause");
-
 }
