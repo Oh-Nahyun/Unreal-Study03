@@ -87,7 +87,16 @@ int main()
 			case RIGHT:
 			case UP:
 			case DOWN:
-				dir = key;
+				// 역방향으로 못 가게 처리해야 한다.
+				// (제일 마지막에 처리) = 180도 역이동을 방지하기 위해 필요!
+				if ((dir == LEFT && key != RIGHT) || 
+				    (dir == RIGHT && key != LEFT) || 
+				    (dir == UP && key != DOWN)    || 
+				    (dir == DOWN && key != UP))
+				{
+					dir = key;
+				}
+				
 				key = 0;
 				break;
 			case PAUSE:			// 일시 정지 (P Key)
