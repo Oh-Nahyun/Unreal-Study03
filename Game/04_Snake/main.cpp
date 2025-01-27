@@ -318,11 +318,16 @@ void move(int dir)
 	// 몸통의 좌표를 한칸씩 옮기기
 
 	// 머리가 있던 부분을 몸통으로 변경
+	gotoxy(MAP_X + x[0], MAP_Y + y[0], "○");
 
 	// 방향에 따라 새로운 머리 좌표를 변경
+	if (dir == LEFT)	--x[0];
+	if (dir == RIGHT)	++x[0];
+	if (dir == UP)		--y[0];
+	if (dir == DOWN)	++y[0];
 
 	// 새로운 머리 좌표에 머리 그리기
-	
+	gotoxy(MAP_X + x[0], MAP_Y + y[0], "●");	// test...
 }
 
 /// <summary>
