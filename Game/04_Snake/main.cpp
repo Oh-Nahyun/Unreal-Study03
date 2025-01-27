@@ -353,10 +353,38 @@ void pause()
 
 /// <summary>
 /// 게임 결과 처리 함수
-/// (게임 오버)
+/// (게임 오버 => 게임 종료 함수 (게임 종료 정보 출력, 타이틀로 복귀 (보여주기))
 /// </summary>
 void game_over()
 {
+	// 게임 종료 정보 출력
+	int _x = MAP_X + (MAP_WIDTH / 2) - 7;
+	gotoxy(_x, MAP_Y + 5, "+------------------------+");
+	gotoxy(_x, MAP_Y + 6, "+    G A M E  O V E R    +");
+	gotoxy(_x, MAP_Y + 7, "+------------------------+");
+	gotoxy(_x, MAP_Y + 8, "  YOUR SCORE : ");
+	printf("%d", last_score = score);
+
+	// 최고 점수 달성 시 출력
+	if (score > best_score)
+	{
+		best_score = score;
+		gotoxy(_x, MAP_Y + 10, "  BEST SCORE");
+	}
+	Sleep(500);
+
+	gotoxy(_x, MAP_Y + 12, "< PRESS ANY KEY TO START >");
+
+	// 키값 초기화
+	while (_kbhit())
+	{
+		_getch();
+	}
+
+	key = _getch();
+
+	// 타이틀로 복귀
+	title();
 }
 
 /// <summary>
