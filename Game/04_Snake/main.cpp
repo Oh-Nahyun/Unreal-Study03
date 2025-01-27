@@ -308,6 +308,12 @@ void move(int dir)
 
 	// 벽과 충돌한 경우
 	// (게임 오버) : 뱀의 머리
+	if (x[0] == 0 || x[0] == MAP_WIDTH - 1 || y[0] == 0 || y[0] == MAP_HEIGHT - 1)
+	{
+		game_over();
+		return;		// game_over 에서 게임을 다시 시작하게 되면 여기서부터 반복된다.
+				// return을 써서 move의 나머지 부분이 실행되지 않도록 한다.
+	}
 
 	// 자기 몸과 충돌한 경우
 	// (게임 오버)
