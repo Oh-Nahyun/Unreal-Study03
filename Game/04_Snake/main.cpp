@@ -317,7 +317,7 @@ void move(int dir)
 	// 몸통의 마지막 지우기
 	gotoxy(MAP_X + x[length - 1], MAP_Y + y[length - 1], "  ");
 
-	// 몸통의 좌표를 한칸씩 옮기기
+	// 몸통의 좌표를 한칸씩 옮기기 (몸통 데이터 저장)
 	for (i = length - 1; i > 0; i--)
 	{
 		x[i] = x[i - 1];
@@ -334,7 +334,8 @@ void move(int dir)
 	if (dir == DOWN)	++y[0];
 
 	// 새로운 머리 좌표에 머리 그리기
-	gotoxy(MAP_X + x[0], MAP_Y + y[0], "●");	// test...
+	//gotoxy(MAP_X + x[0], MAP_Y + y[0], "●");	// test...
+	gotoxy(MAP_X + x[i], MAP_Y + y[i], "●");	// 위와 같은 코드
 }
 
 /// <summary>
@@ -357,6 +358,55 @@ void game_over()
 /// </summary>
 void food()
 {
+	int i = 0;
+
+	// 음식이 뱀 몸통에 생긴 경우 (플래그 ON하여 예외처리)
+	int food_crush_on = 0;
+
+	// 난수용 변수
+	int r = 0;
+
+	// 점수 표시
+	gotoxy(MAP_X, MAP_Y + MAP_HEIGHT, "YOUR SCORE : ");
+	printf("%3d, LAST SCORE : %3d, BEST SCORE : %3d", score, last_score, best_score);
+
+	// 음식 좌표 생성
+	while (true)
+	{
+		food_crush_on = 0;
+		
+		// 난수 생성
+		srand((unsigned)time(NULL) + r);
+
+		// 음식 위치를 난수 좌표에 적용
+		food_x = (rand() % (MAP_WIDTH - 2)) + 1;
+		food_y = (rand() % (MAP_HEIGHT - 2)) + 1;
+
+		// 생성 음식이 몸통과 겹치는지 확인
+		for (i = 0; i < length; i++)
+		{
+			if (food_x == x[i] && food_y == y[i])
+			{
+				food_crush_on = 1;
+				r++;
+				break;
+			}
+		}
+
+		// 겹친 경우 반복문(while) 다시 시작
+		if (food_crush_on == 1)
+		{
+			continue;
+		}
+
+		// 안 겹친 경우 (좌표값에 음식 출력)
+		gotoxy(MAP_X + food_x, MAP_Y + food_y, "@");
+
+		// 먹은 경우 (속도 증가)
+		speed -= 3;
+		break;
+	}
+			
 }
 
 /// <summary>
