@@ -10,12 +10,12 @@
 // 방향키의 아스키 값
 #define LEFT		75		// ← : 224, 75
 #define RIGHT		77		// → : 224, 77
-#define UP			72		// ↑ : 224, 72
+#define UP		72		// ↑ : 224, 72
 #define DOWN		80		// ↓ : 224, 80
 
 #define PAUSE		112		// p키를 입력
 #define STATUS		115		// s키를 입력
-#define ESC			27
+#define ESC		27
 
 #define MAP_X		3
 #define MAP_Y		2
@@ -26,13 +26,13 @@
 
 int x[100], y[100];			// 좌표값 x, y 100개. [0][0] = 뱀머리...
 int food_x, food_y;			// 음식의 좌표값
-int length;					// 몸통의 길이
-int speed;					// 게임 속도
-int score;					// 점수 저장
+int length;				// 몸통의 길이
+int speed;				// 게임 속도
+int score;				// 점수 저장
 int best_score;				// 최고 점수 저장
 int last_score;				// 마지막 플레이 점수 저장
-int dir;					// 이동 방향
-int key;					// 입력 받는 키 값 저장
+int dir;				// 이동 방향
+int key;				// 입력 받는 키 값 저장
 int status_on;				// 개발자용 (디버그용) 상세 정보 보여주기 (s키를 눌러 활성화)
 
 // 게임 함수 정의 ------------------------------
@@ -58,7 +58,7 @@ int main()
 {
 	// 화면 사이즈 조절 & 색 변경
 	system("mode CON COLS=100 LINES=25");	// Windows11은 다르다.
-	system("color 7c");						// 첫자리 : 배경색, 두번째 : 글자색 (0 ~ f)
+	system("color 7c");			// 첫자리 : 배경색, 두번째 : 글자색 (0 ~ f)
 
 	// 커서 숨기기
 	cursor(false);
@@ -93,11 +93,11 @@ int main()
 			case PAUSE:			// 일시 정지 (P Key)
 				pause();
 				break;
-			case STATUS:		// 게임 정보 보기 (S Key)
+			case STATUS:			// 게임 정보 보기 (S Key)
 				if (status_on == 0) status_on = 1;
 				else status_on = 0;
 				// status_on = (!status_on);	// 위 코드와 같은 코드1
-				// status_on != status_on;		// 위 코드와 같은 코드2
+				// status_on != status_on;	// 위 코드와 같은 코드2
 				key = 0;
 				break;
 			case ESC:			// 프로그램 종료
@@ -203,7 +203,7 @@ void title()
 
 			if (key == ESC)		// ESC Key --> 종료
 			{
-				exit(0);		// 0이면 정상 종료, 1이면 강제 종료
+				exit(0);	// 0이면 정상 종료, 1이면 강제 종료
 			}
 			else
 			{
@@ -244,7 +244,7 @@ void reset()
 
 	// 데이터 초기화 ★★★★★
 	dir = LEFT;		// 방향 초기화
-	speed = 100;	// 속도 초기화 (딜레이 값)
+	speed = 100;		// 속도 초기화 (딜레이 값)
 	length = 5;		// 뱀 몸통의 길이 초기화
 	score = 0;		// 점수 초기화
 
