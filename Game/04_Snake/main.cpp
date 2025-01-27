@@ -375,9 +375,9 @@ void pause()
 	{
 		if (key == PAUSE)
 		{
-			gotoxy(MAP_X + (MAP_WIDTH / 2) - 7, MAP_Y, "< PAUSE : PRESS ANY KEY TO START >");
+			gotoxy(MAP_X + (MAP_WIDTH / 2) - 8, MAP_Y, "< PAUSE : PRESS ANY KEY TO START >");
 			Sleep(400);
-			gotoxy(MAP_X + (MAP_WIDTH / 2) - 7, MAP_Y, "                                  ");
+			gotoxy(MAP_X + (MAP_WIDTH / 2) - 8, MAP_Y, "                                  ");
 		}
 		else
 		{
