@@ -312,6 +312,21 @@ void move(int dir)
 
 	// 음식을 먹은 경우
 	// (food와 충돌 => 몸통의 길이가 늘어난다.)
+	if (x[0] == food_x && y[0] == food_y)
+	{
+		// 점수 증가
+		score += 10;
+
+		// 새로운 음식 출력
+		food();
+
+		// 몸통의 길이 증가
+		length++;
+
+		// 새로 생긴 몸통에 값 입력
+		x[length - 1] = x[length - 2];
+		y[length - 1] = y[length - 2];
+	}
 
 	// 벽과 충돌한 경우
 	// (게임 오버) : 뱀의 머리
@@ -356,6 +371,27 @@ void move(int dir)
 /// </summary>
 void pause()
 {
+	while (true)
+	{
+		if (key == PAUSE)
+		{
+			gotoxy(MAP_X + (MAP_WIDTH / 2) - 7, MAP_Y, "< PAUSE : PRESS ANY KEY TO START >");
+			Sleep(400);
+			gotoxy(MAP_X + (MAP_WIDTH / 2) - 7, MAP_Y, "                                  ");
+		}
+		else
+		{
+			draw_map();
+			return;
+		}
+
+		if (_kbhit())
+		{
+			do {
+				key = _getch();
+			} while (key == 224);
+		}
+	}
 }
 
 /// <summary>
