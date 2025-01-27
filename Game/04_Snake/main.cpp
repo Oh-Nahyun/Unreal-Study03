@@ -299,6 +299,8 @@ void draw_map()
 /// <param name="dir"></param>
 void move(int dir)
 {
+	int i = 0;
+	
 	/// [이벤트 처리] ------------------------------
 
 	// 음식을 먹은 경우
@@ -313,9 +315,14 @@ void move(int dir)
 	/// [뱀 그리기 처리] ------------------------------
 
 	// 몸통의 마지막 지우기
-	
+	gotoxy(MAP_X + x[length - 1], MAP_Y + y[length - 1], "  ");
 
 	// 몸통의 좌표를 한칸씩 옮기기
+	for (i = length - 1; i > 0; i--)
+	{
+		x[i] = x[i - 1];
+		y[i] = y[i - 1];
+	}
 
 	// 머리가 있던 부분을 몸통으로 변경
 	gotoxy(MAP_X + x[0], MAP_Y + y[0], "○");
