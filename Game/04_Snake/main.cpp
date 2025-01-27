@@ -182,6 +182,13 @@ void title()
 	draw_map();
 
 	// 맵 테두리 안쪽만 지우기 (빈칸으로 채우기) - (나중에 게임 플레이 시 화면 초기화)
+	for (i = MAP_Y + 1; i < MAP_Y + MAP_HEIGHT - 1; i++)
+	{
+		for (j = MAP_X + 1; j < MAP_X + MAP_WIDTH - 1; j++)
+		{
+			gotoxy(j, i, "  ");
+		}
+	}
 	
 	// 맵 테두리 안쪽에 내용 출력
 	int _x = MAP_X + (MAP_WIDTH / 2) - 7;
