@@ -338,7 +338,15 @@ void move(int dir)
 	}
 
 	// 자기 몸과 충돌한 경우
-	// (게임 오버)
+	// (게임 오버) = 머리와 비교!
+	for (i = 1; i < length; i++)
+	{
+		if (x[0] == x[i] && y[0] == y[i])
+		{
+			game_over();
+			return;
+		}
+	}
 	
 	/// [뱀 그리기 처리] ------------------------------
 
@@ -375,9 +383,9 @@ void pause()
 	{
 		if (key == PAUSE)
 		{
-			gotoxy(MAP_X + (MAP_WIDTH / 2) - 8, MAP_Y, "< PAUSE : PRESS ANY KEY TO START >");
+			gotoxy(MAP_X + (MAP_WIDTH / 2) - 9, MAP_Y, "< PAUSE : PRESS ANY KEY TO START >");
 			Sleep(400);
-			gotoxy(MAP_X + (MAP_WIDTH / 2) - 8, MAP_Y, "                                  ");
+			gotoxy(MAP_X + (MAP_WIDTH / 2) - 9, MAP_Y, "                                  ");
 		}
 		else
 		{
