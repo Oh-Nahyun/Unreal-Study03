@@ -140,6 +140,7 @@ void PrintBingoBoard(int* bingo, int count)
   printf("%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c\n", 3, 6, 6, 21, 6, 6, 21, 6, 6, 21, 6, 6, 21, 6, 6, 4);
 
   // 승리 판단하기
+  printf("\t%d 줄 빙고!\n\n", count);
 }
 
 // 숫자 처리 함수
@@ -194,7 +195,21 @@ void InputNum(int* bingo)
 int CheckBingo(int* bingo);
 {
   // 최대 12개의 빙고 체크 !!
-  // 
+  // (가로 5개, 세로 5개, 대각선 2개 = 12개)
+  int bingoCheck[12] = { 0 };
+  int count = 0;                // 빙고 줄의 수
+  int i, j;
 
-  return 0;
+  // 가로 5줄 확인
+  // 세로 5줄 확인
+  // 대각선 : 왼쪽 위에서 오른쪽 아래로 1줄 확인
+  // 대각선 : 왼쪽 아래에서 오른쪽 위로 1줄 확인
+  // 확인한 빙고수를 센 후 출력
+  
+  for (int i = 0; i < 25; i++)
+  {
+    
+  }
+
+  return count;  // 빙고수 반환
 }
