@@ -86,13 +86,14 @@ void Init(int*)
   // 랜덤 초기화
   srand((unsigned int)time(NULL));
 
-  // 기본 값 저장
+  // 기본 값 저장 (test 확인 완료)
   for (i = 0; i < 25; i++)
   {
     bingo[i] = i + 1;
   }
 
   // 섞어주기 (100번)
+  
 }
 
 void PrintBingoBoard(int* bingo, int count)
