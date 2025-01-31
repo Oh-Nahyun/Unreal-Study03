@@ -93,7 +93,15 @@ void Init(int*)
   }
 
   // 섞어주기 (100번)
-  
+  for (i = 0; i < 100; i++)
+  {
+    int sour = rand() % 25;  // 임의의 인덱스 값
+    int dest = rand() % 25;  // 임의의 인덱스 값 (같아도 상관없음)
+
+    int temp = bingo[sour];
+    bingo[sour] = bingo[dest];
+    bingo[dest] = temp;
+  }
 }
 
 void PrintBingoBoard(int* bingo, int count)
