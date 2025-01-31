@@ -109,12 +109,12 @@ void PrintBingoBoard(int* bingo, int count)
   {
     for (int j = 0; j < 5; j++)  // x
     {
-      // printf("%c #", 5);  // 왼쪽 라인 test
-      printf("%c%2d", 5, bingo[(i * 5) + j]);  // 이런 방식으로 배열을 많이 사용한다!!!
+      // printf("%c #", 5);                    // 왼쪽 라인 test
+      printf("%c%2d", 5, bingo[(i * 5) + j]);  // bingo[y][x] == bingo[y * x] (이런 방식으로 배열을 많이 사용한다!!!)
     }
-    printf("%c\n", 5);  // 맨끝 오른쪽 세로 라인
+    printf("%c\n", 5);                         // 맨끝 오른쪽 세로 라인
     
-    if (i != 4)         // 맨 마지막 출력을 안하도록 처리 (중간 라인 (16개))
+    if (i != 4)                                // 맨 마지막 출력을 안하도록 처리 (중간 라인 (16개))
       printf("%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c\n", 25, 6, 6, 16, 6, 6, 16, 6, 6, 16, 6, 6, 16, 6, 6, 23);
   }
 
