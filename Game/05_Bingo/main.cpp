@@ -76,6 +76,7 @@ void BingoGameStart()
     // 승패 확인하기
 
     // 인풋 (입력) 처리하기
+    InputNum(bingo);
   }
 }
 
@@ -92,7 +93,7 @@ void Init(int*)
     bingo[i] = i + 1;
   }
 
-  // 섞어주기 (100번)
+  /////// 섞어주기 (100번)
   for (i = 0; i < 100; i++)
   {
     int sour = rand() % 25;  // 임의의 인덱스 값
@@ -119,7 +120,7 @@ void PrintBingoBoard(int* bingo, int count)
     for (int j = 0; j < 5; j++)  // x
     {
       // printf("%c #", 5);                    // 왼쪽 라인 test
-      printf("%c%2d", 5, bingo[(i * 5) + j]);  // bingo[y][x] == bingo[y * x] (이런 방식으로 배열을 많이 사용한다!!!)
+      printf("%c%2d", 5, bingo[(i * 5) + j]);  /////// bingo[y][x] == bingo[y * x] (이런 방식으로 배열을 많이 사용한다!!!)
     }
     printf("%c\n", 5);                         // 맨끝 오른쪽 세로 라인
     
@@ -133,9 +134,9 @@ void PrintBingoBoard(int* bingo, int count)
   // 승리 판단하기
 }
 
-void InputNum(int*)
+void InputNum(int* bingo)
 {
-
+  
 }
 
 int CheckBingo(int*);
