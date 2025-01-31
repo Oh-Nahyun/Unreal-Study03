@@ -65,7 +65,8 @@ void BingoGameStart()
   // 게임 반복 부분
   while (true)
   {
-    // 빙고수 체크 = 카운트 (빙고수)!
+    /////// 빙고수 체크 = 카운트 (빙고수)!
+    count = CheckBingo(bingo);
 
     // 화면에 빙고판 그려주기
     PrintBingoBoard(bingo, count);
@@ -189,7 +190,11 @@ void InputNum(int* bingo)
   }
 }
 
-int CheckBingo(int*);
+// 매개 변수로 넘어온 배열 (빙고판)을 체크하여 빙고수를 리턴해주는 함수 !!!
+int CheckBingo(int* bingo);
 {
+  // 최대 12개의 빙고 체크 !!
+  // 
 
+  return 0;
 }
