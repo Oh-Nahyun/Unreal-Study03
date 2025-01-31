@@ -19,5 +19,58 @@ int CheckBingo(int*);              // Bingo 게임 결과 처리 부분 (!!)
 
 int main()
 {
+  // 화면 사이즈 조정
+  system("mode CON COLS=50 LINES=25");
+  system("color 3e");
+
+  // 메뉴 입력 변수
+  int menu = 0;
+
+  // 반복문
+  while (true)
+  {
+    // 메뉴 출력
+    printf("\n\n");
+    printf(" 1. 빙고게임 시작\n\n");
+    printf(" 2. 프로그램 종료\n\n");
+    scanf_s("%d", &menu);
+
+    // 메뉴 선택
+    switch (menu)
+    {
+      case 1:
+        BingoGameStart();
+        break;
+      default:
+        return 0;
+    }
+
+    // 게임 종료
+    system("pause");
+    system("cls");
+  }
+  
   return 0;
+}
+
+/// -----------------------------
+
+void Init(int*)
+{
+
+}
+
+void PrintBingoBoard(int*, int)
+{
+
+}
+
+void InputNum(int*)
+{
+
+}
+
+int CheckBingo(int*);
+{
+
 }
