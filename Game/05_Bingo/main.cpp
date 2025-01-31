@@ -55,14 +55,60 @@ int main()
 
 /// -----------------------------
 
-void Init(int*)
+void BingoGameStart()
 {
+  int gingo[25];  // 유저의 빙고판
+  int count = 0;  // 유저의 빙고수
 
+  Init(bingo);    // 배열 초기화
+
+  // 게임 반복 부분
+  while (true)
+  {
+    // 빙고수 체크 = 카운트 (빙고수)!
+
+    // 화면에 빙고판 그려주기
+    PrintBingoBoard(bingo, count);
+
+    // 빙고판 출력 테스트 (일시 정지)
+    system("pause");
+
+    // 승패 확인하기
+
+    // 인풋 (입력) 처리하기
+  }
 }
 
-void PrintBingoBoard(int*, int)
+void Init(int*)
 {
+  int i;
 
+  // 랜덤 초기화
+  srand((unsigned int)time(NULL));
+
+  // 기본 값 저장
+  for (i = 0; i < 25; i++)
+  {
+    bingo[i] = i + 1;
+  }
+
+  // 섞어주기 (100번)
+}
+
+void PrintBingoBoard(int* bingo, int count)
+{
+  // 화면 클리어
+  system("cls");
+
+  // 선 그리기
+  // 1. 최상단 라인 (16개)
+  printf("%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c\n", 1, 6, 6, 22, 6, 6, 22, 6, 6, 22, 6, 6, 22, 6, 6, 2);
+
+  // 2. 중간 라인
+
+  // 3. 최하단 라인 (16개)
+
+  // 승리 판단하기
 }
 
 void InputNum(int*)
