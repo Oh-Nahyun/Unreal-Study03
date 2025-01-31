@@ -119,8 +119,15 @@ void PrintBingoBoard(int* bingo, int count)
   {
     for (int j = 0; j < 5; j++)  // x
     {
-      // printf("%c #", 5);                    // 왼쪽 라인 test
-      printf("%c%2d", 5, bingo[(i * 5) + j]);  /////// bingo[y][x] == bingo[y * x] (이런 방식으로 배열을 많이 사용한다!!!)
+      // 선택된 숫자를 #으로 표현하기 위해 조건 처리하기
+      if (bingo[(i * 5) + j] == 35)
+      {
+        printf("%c #", 5); // 왼쪽 라인 + # 출력
+      }
+      else
+      {
+        printf("%c%2d", 5, bingo[(i * 5) + j]);  // 해당 숫자 출력 /////// bingo[y][x] == bingo[y * x] (이런 방식으로 배열을 많이 사용한다!!!)
+      }
     }
     printf("%c\n", 5);                         // 맨끝 오른쪽 세로 라인
     
