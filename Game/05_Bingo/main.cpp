@@ -201,14 +201,50 @@ int CheckBingo(int* bingo);
   int i, j;
 
   // 가로 5줄 확인
-  // 세로 5줄 확인
-  // 대각선 : 왼쪽 위에서 오른쪽 아래로 1줄 확인
-  // 대각선 : 왼쪽 아래에서 오른쪽 위로 1줄 확인
-  // 확인한 빙고수를 센 후 출력
-  
-  for (int i = 0; i < 25; i++)
+  for (int i = 0; i < 5; i++)
   {
-    
+    for (int j = 0; j < 5; j++)
+    {
+      if (bingo[(i * 5) + j] == 35)
+        bingoCheck[i]++;
+    }
+  }
+  
+  // 세로 5줄 확인
+  for (int i = 0; i < 5; i++)
+  {
+    for (int j = 0; j < 5; j++)
+    {
+      if (bingo[(j * 5) + i] == 35)
+        bingoCheck[i + 5]++;
+    }
+  }
+  
+  // 대각선 : 왼쪽 위에서 오른쪽 아래로 1줄 확인
+  for (int i = 0; i < 5; i++)
+  {
+    for (int j = i; j <= i; j++)
+    {
+      if (bingo[(i * 5) + j] == 35)
+        bingoCheck[10]++;
+    }
+  }
+  
+  // 대각선 : 왼쪽 아래에서 오른쪽 위로 1줄 확인
+  for (int i = 4; i >= 0; i--)
+  {
+    for (int j = 4 - i; j >= 4 - i; j--)
+    {
+      if (bingo[(i * 5) + j] == 35)
+        bingoCheck[11]++;
+    }
+  }
+  
+  // 확인한 빙고수를 센 후 출력
+  for (int i = 0; i < 12; i++)
+  {
+    if (bingoCheck[i] == 5)
+      count++;
   }
 
   return count;  // 빙고수 반환
