@@ -71,7 +71,7 @@ void BingoGameStart()
     PrintBingoBoard(bingo, count);
 
     // 빙고판 출력 테스트 (일시 정지)
-    system("pause");
+    //system("pause");
 
     // 승패 확인하기
 
@@ -134,9 +134,52 @@ void PrintBingoBoard(int* bingo, int count)
   // 승리 판단하기
 }
 
+// 숫자 처리 함수
+// 1. 새로운 수가 이미 체크되었는지 확인 기능
+// 2. 체크가 안되어있으면 체크해주는 기능
+// 3. 정상적인 숫자가 들어오면 저장 기능
 void InputNum(int* bingo)
 {
-  
+  // 입력 저장 변수
+  int num;
+
+  // 이미 입력되어 체크되어있는지 확인 변수 (플래그)
+  int isCheck;
+
+  // 정상적인 수(새롭고 & 체크 안된)가 입력될 때까지 반복
+  while (true)
+  {
+    // 초기화
+    isCheck = 0;
+
+    // 화면 출력
+    printf(" 입력 : ");
+    scanf_s("%d", &num);
+
+    // 입력받은 수의 범위 체크 (1 ~ 25)
+    if (num < 1 || num > 25)
+    {
+      printf(" 1 ~ 25 사이의 숫자를 입력해주세요.\n");
+    }
+    else // 정상적인 수가 들어온 경우
+    {
+      // 빙고 배열을 25개 모두 검사해서 같은 수가 저장되어있다면...
+      for (int i = 0; i < 25; i++)
+      {
+        // 입력받은 수가 있다면...
+        if (bingo[i] == num)
+        {
+          bingo[i] = 35;      // # = ASCII 32 // bingo[i] = '#';
+          isCheck = 1;
+        }
+      }
+
+      // 체크되어있다면...
+      if (isCheck) break;
+      // 체크가 안되어있다면...
+      else printf(" 이미 입력한 숫자입니다.\n");
+    }
+  }
 }
 
 int CheckBingo(int*);
