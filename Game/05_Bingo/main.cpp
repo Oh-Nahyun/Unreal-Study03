@@ -75,6 +75,11 @@ void BingoGameStart()
         //system("pause");
 
         // 승패 확인하기
+        if (count >= 5)
+        {
+            printf("게임 종료!\n");
+            break;
+        }
 
         // 인풋 (입력) 처리하기
         InputNum(bingo);
@@ -140,7 +145,10 @@ void PrintBingoBoard(int* bingo, int count)
     printf("%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c\n", 3, 6, 6, 21, 6, 6, 21, 6, 6, 21, 6, 6, 21, 6, 6, 4);
 
     // 승리 판단하기
-    printf("\t%d 줄 빙고!\n\n", count);
+    if (count >= 5)
+        printf("\t%d 줄 빙고로 승리 하였습니다.\n\n", count);
+    else
+        printf("\t%d 줄 빙고!\n\n", count);
 }
 
 // 숫자 처리 함수
