@@ -31,7 +31,7 @@ int main()
 	while (true)
 	{
 		// 게임 준비
-		isStart = ReadyGame();	// s, q
+		isStart = ReadyGame();	// s, q => Start 키가 입력되면 true
 
 		// 게임 시작
 		if (isStart)
@@ -65,21 +65,35 @@ int main()
 /// <param name="y"></param>
 void gotoxy(int x, int y)
 {
+	COORD Pos;
+	Pos.X = 2 * x;
+	Pos.Y = y;
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Pos);
 }
 
 /// <summary>
 /// 콘솔 화면 세팅 함수
+/// (화면 사이즈 조절 & 색 변경)
 /// </summary>
 void SetConsoleView()
 {
+	system("mode CON COLS=80 LINES=25");	// Windows11은 다르다.
+	system("title [HangManGame]");			// 게임 제목
+	system("color 7c");						// 첫자리 : 배경색, 두번째 : 글자색 (0 ~ f)
 }
 
 /// <summary>
 /// 키보드 입력 함수
 /// </summary>
-/// <returns></returns>
+/// <returns>입력된 키 값</returns>
 int GetKeyDown()
 {
+	// 키보드에 무언가 입력이 오면...
+	if (_kbhit() != 0)
+	{
+		return _getch();
+	}
+
 	return 0;
 }
 
@@ -88,6 +102,15 @@ int GetKeyDown()
 /// </summary>
 void DrawReadyGame()
 {
+	system("cls");
+
+	gotoxy(5, 2);	cout << "==============================";
+	gotoxy(5, 3);	cout << "=====    HANG MAN GAME   =====";
+	gotoxy(5, 4);	cout << "==============================";
+
+	gotoxy(5, 6);	cout << "시작하려면 'S'키를 눌러주세요.";
+
+	gotoxy(5, 8);	cout << "종료하려면 'Q'키를 눌러주세요.";
 }
 
 /// <summary>
@@ -101,11 +124,47 @@ void DrawStartGame(int life, int score, vector<string>& pastWord)
 }
 
 /// <summary>
-/// 사전(단어)을 세팅하는 함수
+/// 사전(단어)을 세팅하는 함수 ★ ★ ★ ★ ★
 /// </summary>
 /// <param name="strArr"></param>
 void SetDictionary(vector<string>& strArr)
 {
+	static const int INIT_NUM = 4;
+	static const string str[INIT_NUM] = { "apple", "banana", "code", "program" };	// 샘플 영어 단어들
+
+	ifstream readFromFile("words.txt");						// 읽기 전용으로 파일 오픈
+
+	if (!readFromFile.is_open())								// 오픈되지 않는다는 건 파일이 존재하지 않는다는 의미!
+	{
+		ofstream writeToFile("words.txt");					// 쓰기 전용으로 파일 오픈 (파일이 없으면 자동으로 생성)
+
+		for (int i = 0; i < INIT_NUM; ++i)
+		{
+			string temp = str[i];
+
+			if (i != INIT_NUM - 1)
+			{
+				temp += "\n";
+			}
+
+			writeToFile.write(temp.c_str(), temp.size());	// 파일에 쓰는 함수
+			strArr.push_back(str[i]);						// 단어장(strArr)에 단어를 넣는다.
+		}
+
+		writeToFile.close();								// 쓰기 파일 닫기
+		return;
+	}
+
+	// 읽기 전용으로 성공한 경우 => 파일을 끝까지 읽어옴
+	while (!readFromFile.eof())			// 파일 끝까지...
+	{
+		string temp;
+		getline(readFromFile, temp);	// 한줄씩 읽기
+		strArr.push_back(temp);			// 단어장에 저장하기
+	}
+
+	readFromFile.close();				// 읽기 파일 닫기
+	return;
 }
 
 /// <summary>
@@ -114,6 +173,26 @@ void SetDictionary(vector<string>& strArr)
 /// <returns></returns>
 bool ReadyGame()
 {
+	// 시작 화면 그리기
+	DrawReadyGame();
+
+	// 키 입력 처리하기
+	while (true)
+	{
+		// 키 입력 부분
+		int key = GetKeyDown();
+
+		// 키 확인
+		if (key == 's' || key == 'S')
+		{
+			return true;
+		}
+		else if (key == 'q' || key == 'Q')
+		{
+			break;
+		}
+	}
+
 	return false;
 }
 
@@ -122,4 +201,54 @@ bool ReadyGame()
 /// </summary>
 void StartGame()
 {
+	// 게임 데이터
+	int score = 0;
+
+	// 입력한 영단어 저장
+	vector<string> pastWord;
+
+	// 맞출 단어장
+	vector<string> strArr;
+
+	// 파일 읽기
+	SetDictionary(strArr);
+
+	// 게임 루프 (반복)
+	while (true)
+	{
+		// Play (단어 문제 랜덤 선택)
+		int num = 0;
+		srand((unsigned) time(NULL));
+		num = rand() % strArr.size();
+
+		// 정답 확인용으로 저장하기 (string)
+
+		// 정답 확인용으로 저장하기 (length)
+
+		// 초기화 (Init)
+
+		// 질문 (하나의 단어를 맞추는 루프!)
+		while (true)
+		{
+			// 생명력, 점수, 사용한 알파벳 & 단어 표기하기
+
+			// 문제 그리기
+
+			// 입력 처리하기
+
+			// 종료 입력 처리하기 (나가기)
+
+			// 한번 입력한 단어는 pastWord에서 표기하기
+
+			// ------------------------------
+
+			// 입력값 확인하기 (판별)
+
+			// 1. 입력받은 스트링의 길이가 1인 경우 (단어의 알파벳을 찾음)
+
+			// 2. 입력받은 스트링의 길이가 1보다 긴 경우 (단어 => 정답인지 확인)
+
+			// 라이프 수 조정하기 (틀리거나 맞거나 한자리 입력이 들어오면 => 무조건 life가 하나씩 깎인다.)
+		}
+	}
 }
