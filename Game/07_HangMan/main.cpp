@@ -222,8 +222,10 @@ void StartGame()
 		num = rand() % strArr.size();
 
 		// 정답 확인용으로 저장하기 (string)
+		string strOriginal = strArr[num];
 
 		// 정답 확인용으로 저장하기 (length)
+		//string OriginalLen = strOriginal.length();
 
 		// 초기화 (Init)
 
