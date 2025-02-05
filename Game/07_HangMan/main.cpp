@@ -245,7 +245,7 @@ void StartGame()
 
 		// 정답 확인용으로 저장하기 (length)
 		//int OriginalLen = strOriginal.length();
-		int OriginalLen = static_cast<int>(strOriginal.length());
+		const int OriginalLen = static_cast<int>(strOriginal.length());
 
 		// 초기화 (Init)
 		for (int i = 0; i < OriginalLen; ++i)
