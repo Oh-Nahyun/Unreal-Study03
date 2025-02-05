@@ -40,7 +40,7 @@ while (true)
 		StartGame();
 
 		// 테스트용
-		system("pause");
+		//system("pause");
 	}
 	// 게임 종료
 	else
