@@ -28,32 +28,32 @@ int main()
 	bool isStart = false;
 
 	// 반복문
-	while (true)
+while (true)
+{
+	// 게임 준비
+	isStart = ReadyGame();	// s, q => Start 키가 입력되면 true
+
+	// 게임 시작
+	if (isStart)
 	{
-		// 게임 준비
-		isStart = ReadyGame();	// s, q => Start 키가 입력되면 true
-
 		// 게임 시작
-		if (isStart)
-		{
-			// 게임 시작
-			StartGame();
+		StartGame();
 
-			// 테스트용
-			system("pause");
-		}
-		// 게임 종료
-		else
-		{
-			// 다음 줄로 넘김
-			cout << endl << endl;
-
-			// 게임 종료
-			break;
-		}
+		// 테스트용
+		system("pause");
 	}
+	// 게임 종료
+	else
+	{
+		// 다음 줄로 넘김
+		cout << endl << endl;
 
-	return 0;
+		// 게임 종료
+		break;
+	}
+}
+
+return 0;
 }
 
 // ------------------------------
@@ -116,11 +116,24 @@ void DrawReadyGame()
 /// <summary>
 /// 게임 화면 그리는 함수
 /// </summary>
-/// <param name="life"></param>
-/// <param name="score"></param>
-/// <param name="pastWord"></param>
+/// <param name="life">생명력</param>
+/// <param name="score">점수</param>
+/// <param name="pastWord">사용한 단어</param>
 void DrawStartGame(int life, int score, vector<string>& pastWord)
 {
+	system("cls");
+
+	gotoxy(5, 1);	cout << "Life = " << life;
+	gotoxy(5, 2);	cout << "Score = " << score;
+
+	gotoxy(5, 8);	cout << "Past = ";
+	for (int i = 0; i < static_cast<int>(pastWord.size()); ++i)
+	{
+		cout << pastWord[i] << " ";
+	}
+
+	gotoxy(5, 12);	cout << "Input = ";
+	gotoxy(5, 14);	cout << "(메인화면으로 가려면 'QQ'를 입력해주세요.)" << endl;
 }
 
 /// <summary>
@@ -134,7 +147,7 @@ void SetDictionary(vector<string>& strArr)
 
 	ifstream readFromFile("words.txt");						// 읽기 전용으로 파일 오픈
 
-	if (!readFromFile.is_open())								// 오픈되지 않는다는 건 파일이 존재하지 않는다는 의미!
+	if (!readFromFile.is_open())							// 오픈되지 않는다는 건 파일이 존재하지 않는다는 의미!
 	{
 		ofstream writeToFile("words.txt");					// 쓰기 전용으로 파일 오픈 (파일이 없으면 자동으로 생성)
 
@@ -219,38 +232,104 @@ void StartGame()
 		// Play (단어 문제 랜덤 선택)
 		int num = 0;
 		srand((unsigned) time(NULL));
-		num = rand() % strArr.size();
+
+		//num = rand() % strArr.size();
+		//num = (int)(rand() % strArr.size());				// 타입캐스팅01 : int 형 변환
+		num = rand() % static_cast<int>(strArr.size());		// 타입캐스팅02 : static_cast<바꾸고자 하는 타입>(대상)
+
+		// _ _ _ _ _ _ 형태로 표현할 변수
+		string strQuestion;
 
 		// 정답 확인용으로 저장하기 (string)
-		string strOriginal = strArr[num];
+		const string strOriginal = strArr[num];
 
 		// 정답 확인용으로 저장하기 (length)
-		//string OriginalLen = strOriginal.length();
+		//int OriginalLen = strOriginal.length();
+		int OriginalLen = static_cast<int>(strOriginal.length());
 
 		// 초기화 (Init)
+		for (int i = 0; i < OriginalLen; ++i)
+		{
+			strQuestion += "_";			// 정답의 길이 만큼 "_" 넣기
+		}
+
+		int life = OriginalLen + 2;		// 생명력은 정답 길이 + 2
 
 		// 질문 (하나의 단어를 맞추는 루프!)
 		while (true)
 		{
 			// 생명력, 점수, 사용한 알파벳 & 단어 표기하기
+			DrawStartGame(life, score, pastWord);
 
 			// 문제 그리기
+			gotoxy(5, 5);
+			for (int i = 0; i < OriginalLen; ++i)
+			{
+				cout << strQuestion[i] << " ";
+			}
+			cout << endl;
 
 			// 입력 처리하기
+			gotoxy(10, 12);
+			string strInput;
+			cin >> strInput;
 
 			// 종료 입력 처리하기 (나가기)
+			if (strInput == "qq" || strInput == "QQ")
+			{
+				return;
+			}
 
 			// 한번 입력한 단어는 pastWord에서 표기하기
+			pastWord.push_back(strInput);
 
 			// ------------------------------
 
 			// 입력값 확인하기 (판별)
 
 			// 1. 입력받은 스트링의 길이가 1인 경우 (단어의 알파벳을 찾음)
+			if (strInput.length() == 1)
+			{
+				// 알파벳 검색
+				for (int i = 0; i < OriginalLen; ++i)
+				{
+					// 오리지널 단어에 입력한 알파벳이 있는 경우 확인하기!
+					if (strOriginal[i] == strInput[0])
+					{
+						// 해당 위치에 "_"를 알파벳으로 변경한다.
+						strQuestion[i] = strInput[0];
+					}
+				}
+			}
 
 			// 2. 입력받은 스트링의 길이가 1보다 긴 경우 (단어 => 정답인지 확인)
+			else if (strInput.length() > 1)
+			{
+				// 단어 체크, 오리지널 단어와 입력 단어가 같은 경우 (정답)
+				if (strOriginal == strInput)
+				{
+					// 정답인 경우, 정답 점수에 5점을 더한다.
+					score += 5;
+					pastWord.clear();
+
+					// 하나의 단어를 맞추는 루프를 나가게 되고, 다음 턴으로 넘어간다.
+					break;
+				}
+			}
 
 			// 라이프 수 조정하기 (틀리거나 맞거나 한자리 입력이 들어오면 => 무조건 life가 하나씩 깎인다.)
+			life -= 1;
+			if (life < 0)
+			{
+				score -= 5;
+				if (score < 0)
+				{
+					// 사실상 게임 오버
+					score = 0;	// 문제를 틀려도 계속 플레이 가능하도록 처리
+				}
+				pastWord.clear();
+				break;
+			}
 		}
 	}
 }
