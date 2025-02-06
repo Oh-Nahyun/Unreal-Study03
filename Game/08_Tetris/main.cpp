@@ -242,8 +242,39 @@ void reset()
 	new_block();			// 새로운 블록 하나 만들기
 }
 
+/// (data)
 void reset_main()
 {
+	int i, j;
+
+	// 게임판을 0으로 초기화
+	for (i = 0; i < MAIN_Y; i++)
+	{
+		for (j = 0; j < MAIN_X; j++)
+		{
+			main_org[i][j] = 0;
+			main_cpy[i][j] = 0;
+		}
+	}
+
+	// 천장 (y값이 3인 위치) : Celling
+	for (j = 1; j < MAIN_X; j++)
+	{
+		main_org[3][j] = CELLING;
+	}
+
+	// 좌우 벽돌 만들기 : Wall
+	for (i = 0; i < MAIN_Y - 1; i++)
+	{
+		main_org[i][0] = WALL;			// 왼쪽
+		main_org[i][MAIN_X - 1] = WALL;		// 오른쪽
+	}
+
+	// 바닥 벽돌 만들기 : Wall
+	for (j = 0; j < MAIN_X; j++)
+	{
+		main_org[MAIN_Y - 1][j] = WALL;
+	}
 }
 
 void reset_main_cpy()
@@ -252,6 +283,7 @@ void reset_main_cpy()
 
 void draw_map()
 {
+	
 }
 
 void draw_main()
