@@ -126,6 +126,7 @@ int main()
 	title();
 
 	// 게임판 리셋
+	reset();
 
 	// 게임 반복 루프
 	while (true)
