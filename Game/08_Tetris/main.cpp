@@ -170,6 +170,24 @@ void title()
 	gotoxy(x, y + 14);	print("  ESC  : Quit");
 	
 	gotoxy(x, y + 16);	print("BONUS FOR HARD DROPS / COMBOS");
+
+	// (연출) 재미는 있지만 하나도 안중요한 별 애니메이션 효과.. ------------------------------
+	for (cnt = 0; ; cnt++)
+	{
+		if (_kbhit())			// 키 입력이 있다면 무한 루프 종료
+			break;
+
+		if (cnt % 200 == 0)		// 200으로 나누어 떨어질 때는 별 표시
+			gotoxy(x + 4, y + 1);	printf("★");
+		
+		if ((cnt % 200 - 100) == 0)	// 위카운트에서 100 카운트 간격으로 별 지우기
+			gotoxy(x + 4, y + 1);	printf("  ");
+
+		// 딜레이
+		Sleep(10);
+	}
+	
+	// 버퍼에 기록된 키값 버리기
 }
 
 void reset()
