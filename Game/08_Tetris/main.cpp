@@ -4,6 +4,11 @@
 #include <time.h>
 #include <Windows.h>
 
+// 1. 속성 > C/C++ > 전처리기 > 전처리기 정의 (_CRT_SECURE_NO_WARNINGS (추가))
+// 2. 속성 > C/C++ > 일반 > SDL 검사 (아니오 (선택))
+// 3. 속성 > C/C++ > 언어 > 준수 모드 (아니오 (선택))
+#define _CRT_SECURE_NO_WARNINGS
+
 // Define ------------------------------
 #define LEFT			75		// 좌로 이동
 #define RIGHT			77		// 우로 이동
