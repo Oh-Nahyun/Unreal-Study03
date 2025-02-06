@@ -120,8 +120,10 @@ int main()
 	system("color 3e");
 
 	// 커서 숨기기
+	set_cursor_type(NOCURSOR);
 
 	// 메인 타이틀 출력
+	title();
 
 	// 게임판 리셋
 
@@ -146,6 +148,15 @@ int main()
 
 void title()
 {
+	int x = 5;	// 타이틀 화면이 표시되는 x 좌표
+	int y = 4;	// 타이틀 화면이 표시되는 y 좌표
+	int cnt;	// 타이틀 프레임을 세는 변수 (약간의 효과를 위한 변수)
+
+	gotoxy(x, y + 0);	printf("");	Sleep(100);
+	gotoxy(x, y + 1);	printf("");	Sleep(100);
+	gotoxy(x, y + 2);	printf("");	Sleep(100);
+	gotoxy(x, y + 3);	printf("");	Sleep(100);
+	gotoxy(x, y + 4);	printf("");	Sleep(100);
 }
 
 void reset()
@@ -206,8 +217,31 @@ void pause()
 
 void gotoxy(int x, int y)
 {
+	COORD pos = { 2 * x, y };
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
 }
 
 void set_cursor_type(CURSOR_TYPE c)
 {
+	CONSOLE_CURSOR_INFO CurInfo;
+
+	switch (c)
+	{
+		case NOCURSOR:
+			CurInfo.dwSize = 1;
+			CurInfo.bVisible = FALSE;
+			break;
+		case SOLIDCURSOR:
+			CurInfo.dwSize = 100;
+			CurInfo.bVisible = TRUE;
+			break;
+		case NORMALCURSOR:
+			CurInfo.dwSize = 20;
+			CurInfo.bVisible = TRUE;
+			break;
+		default:
+			break;
+	}
+
+	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &CurInfo);
 }
