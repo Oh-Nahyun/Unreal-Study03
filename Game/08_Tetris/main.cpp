@@ -7,21 +7,21 @@
 // Define ------------------------------
 #define LEFT			75		// 좌로 이동
 #define RIGHT			77		// 우로 이동
-#define UP				72		// 회전
+#define UP			72		// 회전
 #define DOWN			80		// 빠른 하단 이동 (Soft Move)
 #define SPACE			21		// 바로 바닥으로 순간 이동 (Hatd Move)
-#define p			   112		// p키를 입력 (소문자)
-#define P				80		// P키를 입력 (대문자)
-#define ESC				27		// 게임 종료
+#define p			112		// p키를 입력 (소문자)
+#define P			80		// P키를 입력 (대문자)
+#define ESC			27		// 게임 종료
 
 // 게임 보드 상태 & Status 정보
 // 블록이 이동할 수 있는 공간은 0 또는 음수로 표현 (0, -1, -2)
 // 블록이 이동할 수 없는 공간은 양수로 표현 (1, 2)
-#define ACTIVE_BLOCK	-2
+#define ACTIVE_BLOCK		-2
 #define CELLING			-1
 #define EMPTY			 0
 #define WALL			 1
-#define INACTIVE_BLOCK	 2		// 이동이 완료된 블록 값
+#define INACTIVE_BLOCK	 	 2		// 이동이 완료된 블록 값
 
 #define MAIN_X			11		// 게임판 가로 크기
 #define MAIN_Y			23		// 게임판 세로 크기
@@ -201,6 +201,38 @@ void title()
 
 void reset()
 {
+	// 최고 점수는 파일로 저장
+	FILE* file = fopen("score.dat", "rt");	// score.dat 파일을 연결
+
+	if (file)
+	{
+		best_score = 0;			// 파일이 없으면 그냥 최고 점수에 0을 넣는다.
+	}
+	else
+	{
+		fscanf(file, "%d", &best_score); // 파일이 열리면 최고 점수를 불러온다.
+		fclose(file);
+	}
+
+	// 각종 변수 초기화
+	level = 1;
+	score = 0;
+	level_goal = 10;
+	key = 0;
+	crush_on = 0;
+	cnt = 0;
+	speed = 100;
+
+	// 화면 지우기
+	system("cls");
+	
+	// 데이터 초기화
+	reset_main();			// main_org 을 초기화 (천장, 좌우 벽돌, 바닥 등 초기화)
+	draw_map();			// 게임 화면 그리기 (화면 오른쪽 정보 내용 등 출력) - UI
+	draw_main();			// 게임판 그리기 (플레이 화면 내용)
+
+	b_type_next = rand() % 7;	// 다음에 나올 블록 종류를 랜덤하게 생성하기
+	new_block();			// 새로운 블록 하나 만들기
 }
 
 void reset_main()
