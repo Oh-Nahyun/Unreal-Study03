@@ -115,7 +115,29 @@ int main()
 	srand((unsigned)time(NULL));
 
 	// 화면 크기
-	
+	system("mode con:cols=80 lines=30");
+	system("title [TETRIS]");
+	system("color 3e");
+
+	// 커서 숨기기
+
+	// 메인 타이틀 출력
+
+	// 게임판 리셋
+
+	// 게임 반복 루프
+	while (true)
+	{
+		// 키 입력하기
+		
+		// 블록 한칸 내리기
+		
+		// 레벨업 확인하기
+		
+		// 게임 오버 확인하기
+		
+		// 새로운 블록 생성하기 (뉴블록 플래그가 있는 경우)
+	}
 	
 	return 0;
 }
