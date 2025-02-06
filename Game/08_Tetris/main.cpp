@@ -152,11 +152,24 @@ void title()
 	int y = 4;	// 타이틀 화면이 표시되는 y 좌표
 	int cnt;	// 타이틀 프레임을 세는 변수 (약간의 효과를 위한 변수)
 
-	gotoxy(x, y + 0);	printf("");	Sleep(100);
-	gotoxy(x, y + 1);	printf("");	Sleep(100);
-	gotoxy(x, y + 2);	printf("");	Sleep(100);
-	gotoxy(x, y + 3);	printf("");	Sleep(100);
-	gotoxy(x, y + 4);	printf("");	Sleep(100);
+	gotoxy(x, y + 0);	printf("◼︎◻︎◼︎◻︎◼︎◻︎◼︎◻︎◼︎◻︎◼︎◻︎◼︎◻︎◼︎");			Sleep(200);
+	gotoxy(x, y + 1);	printf("◻︎◼︎◻︎◼︎◻︎◼︎◻︎◼︎◻︎◼︎◻︎◼︎◻︎◼︎◻︎");			Sleep(200);
+	gotoxy(x, y + 2);	printf("◼︎◻︎◼︎◻︎              ◻︎◼︎◻︎◼︎");		Sleep(200);
+	gotoxy(x, y + 3);	printf("◻︎◼︎◻︎◼︎◻︎◼︎◻︎◼︎◻︎◼︎◻︎◼︎◻︎◼︎◻︎");			Sleep(200);
+	gotoxy(x, y + 4);	printf("◼︎◻︎◼︎◻︎◼︎◻︎◼︎◻︎◼︎◻︎◼︎◻︎◼︎◻︎◼︎");			Sleep(200);
+
+	gotoxy(x + 5, y + 2);	print("T E T R I S");				Sleep(200);
+	
+	gotoxy(x, y + 7);	print("Please Enter Any Key to Start..");	Sleep(200);
+	
+	gotoxy(x, y + 9);	print("  △    : Shift");
+	gotoxy(x, y + 10);	print("◁   ▷  : Left / Right");
+	gotoxy(x, y + 11);	print("  ▽    : Soft Drop");
+	gotoxy(x, y + 12);	print(" SPACE : Hard Drop");
+	gotoxy(x, y + 13);	print("   P   : Pause");
+	gotoxy(x, y + 14);	print("  ESC  : Quit");
+	
+	gotoxy(x, y + 16);	print("BONUS FOR HARD DROPS / COMBOS");
 }
 
 void reset()
