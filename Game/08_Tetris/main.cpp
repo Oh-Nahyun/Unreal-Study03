@@ -55,42 +55,137 @@ int blocks[7][4][4][4] = {
 };
 
 // 게임 변수 ------------------------------
-// 블록 종류
-// 블록 회전값
-// 다음 블록값
+int b_type;			// 블록 종류
+int b_rotation;			// 블록 회전값
+int b_type_next;		// 다음 블록값
 
-// 게임판의 정보를 저장하는 배열. 화면에 표시 후 Main_cpy로 복사된다.
-// 게임판이 화면에 표기되기 전의 정보를 가지고 있음.
+int main_org[MAIN_Y][MAIN_X];	// 게임판의 정보를 저장하는 배열. 화면에 표시 후 Main_cpy로 복사된다.
+int main_cpy[MAIN_Y][MAIN_X];	// 게임판이 화면에 표기되기 전의 정보를 가지고 있음.
+				// main의 전체를 비교하지 않고 (계속 표기하면 화면이 깜빡거린다.)
+				// main_cpy와 배열을 비교하여 값이 달라진 부분만 모니터에 새로 고침!!!
 
-// 이동 중인 블록의 게임판 상의 x, y 좌표
+int bx, by;			// 이동 중인 블록의 게임판 상의 x, y 좌표
 
-// 키보드로 받은 키값
+int key;			// 키보드로 받은 키값
 
-// 게임 진행 속도
-// 현재 레벨
-// 목표 점수 : 다음 레벨로 넘어가기 위한 점수
-// 현재 레벨에서 제거한 줄 수
-// 현재 점수
-// 마지막 점수
-// 최고 점수
+int speed;			// 게임 진행 속도
+int level;			// 현재 레벨
+int level_goal;			// 목표 점수 : 다음 레벨로 넘어가기 위한 점수
+int cnt;			// 현재 레벨에서 제거한 줄 수
+int score;			// 현재 점수
+int last_score = 0;		// 마지막 점수
+int best_score = 0;		// 최고 점수
 
-// 새로운 블록이 필요함을 알리는 플래그 (flag)
-// 현재 이동 중인 블록이 충돌 상태인지 알려주는 플래그 (flag)
-// 다음 레벨로 진행하라고 알리는 플래그 (현재 레벨 목표가 완료되었음) (flag)
-// 하드 드롭 상태임을 알리는 플래그 (flag) (= bool 형)
+int new_block_on = 0;		// 새로운 블록이 필요함을 알리는 플래그 (flag)
+int crush_on = 0;		// 현재 이동 중인 블록이 충돌 상태인지 알려주는 플래그 (flag)
+int level_up_on = 0;		// 다음 레벨로 진행하라고 알리는 플래그 (현재 레벨 목표가 완료되었음) (flag)
+int space_key_on = 0;		// 하드 드롭 상태임을 알리는 플래그 (flag) (= bool 형)
 
 // 커서 숨기기 열거형 데이터
+typedef enum { NOCURSOR, SOLIDCURSOR, NORMALCURSOR } CURSOR_TYPE;
 
 // 게임 함수 ------------------------------
+void title();			// 게임 시작 화면 출력 함수
+void reset();			// 게임판 초기화 함수
+void reset_main();		// 메인 게임판 초기화 함수 (main_orh[][])
+void reset_main_cpy();		// 복사 게임판 초기화 함수 (main_cpy[][])
+void draw_map();		// 게임 전체 인터페이스를 표시하는 함수
+void draw_main();		// 게임판 그리는 함수
+void new_block();		// 새로운 블록 하나를 만드는 함수
+void check_key();		// 키보드로 키 입력받는 함수
+void drop_block();		// 블록을 아래로 떨어트리는 함수
+int check_crush(int bx, int by, int b_rotation);	// 충돌 판단 함수 (rotation 시에 위치 보정)
+void move_block(int dir);	// dir 방향으로 블록을 움직이는 함수
+void check_line();		// 줄이 가득 찼는지 판단하고 지우는 함수
+void check_level_up();		// 레벨 목표를 달성했는지 판단하고 레벨업을 시키는 함수
+void check_game_over();		// 게임 오버인지 판단하고 게임 오버 시키는 함수
+void pause();			// 게임 일시 정지 시키는 함수
+
+void gotoxy(int x, int y);	// 커서 이동 함수
+void set_cursor_type(CURSOR_TYPE c);	// 커서 숨기는 함수
 
 // ------------------------------
 
 int main()
 {
+	// 반복자
+	int i;
+
+	// 난수 초기화
+	srand((unsigned)time(NULL));
+
+	// 화면 크기
+	
+	
 	return 0;
 }
 
 // ------------------------------
 
+void title()
+{
+}
 
+void reset()
+{
+}
 
+void reset_main()
+{
+}
+
+void reset_main_cpy()
+{
+}
+
+void draw_map()
+{
+}
+
+void draw_main()
+{
+}
+
+void new_block()
+{
+}
+
+void check_key()
+{
+}
+
+void drop_block()
+{
+}
+
+int check_crush(int bx, int by, int b_rotation)
+{
+}
+
+void move_block(int dir)
+{
+}
+
+void check_line()
+{
+}
+
+void check_level_up()
+{
+}
+
+void check_game_over()
+{
+}
+
+void pause()
+{
+}
+
+void gotoxy(int x, int y)
+{
+}
+
+void set_cursor_type(CURSOR_TYPE c)
+{
+}
