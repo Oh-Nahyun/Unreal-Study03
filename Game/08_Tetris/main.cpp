@@ -281,13 +281,23 @@ void reset_main_cpy()
 {
 }
 
+/// 게임 상태 표시를 나타내는 함수 = UI
 void draw_map()
 {
 	
 }
 
+/// 게임판을 그리는 함수 (Main Image)
 void draw_main()
 {
+	int i, j;
+	
+	// 천장은 계속 새로운 블록이 지나가서 지워지면 새로 그려주기
+
+	// cpy 와 비교하여 값이 달라진 부분만 새로 그려주기
+	// (전체를 다시 모두 그리면 계속 그려져서 느려지고 화면이 껌뻑거린다..)
+
+	// 게임판을 그린 후 main_cpy 에 복사하기
 }
 
 void new_block()
