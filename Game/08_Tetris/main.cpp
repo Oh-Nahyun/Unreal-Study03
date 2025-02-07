@@ -197,15 +197,15 @@ void title()
 		if (_kbhit())				// 키 입력이 있다면 무한 루프 종료
 			break;
 
-		if (cnt % 200 == 0)			// 200으로 나누어 떨어질 때는 별 표시
-			gotoxy(x + 2, y + 1);	printf("★");
-		if ((cnt % 200 - 100) == 0)	// 위 카운트에서 100 카운트 간격으로 별 지우기
-			gotoxy(x + 2, y + 1);	printf("  ");
+		//if (cnt % 200 == 0)			// 200으로 나누어 떨어질 때는 별 표시
+		//	gotoxy(x, y + 1);	printf("★");
+		//if ((cnt % 200 - 100) == 0)	// 위 카운트에서 100 카운트 간격으로 별 지우기
+		//	gotoxy(x + 2, y + 1);	printf("  ");
 
-		if (cnt % 350 == 0)			// 350으로 나누어 떨어질 때는 별 표시
-			gotoxy(x + 13, y + 2);	printf("★");
-		if ((cnt % 350 - 100) == 0)	// 위 카운트에서 100 카운트 간격으로 별 지우기
-			gotoxy(x + 13, y + 2);	printf("  ");
+		//if (cnt % 350 == 0)			// 350으로 나누어 떨어질 때는 별 표시
+		//	gotoxy(x + 13, y + 2);	printf("★");
+		//if ((cnt % 350 - 100) == 0)	// 위 카운트에서 100 카운트 간격으로 별 지우기
+		//	gotoxy(x + 13, y + 2);	printf("  ");
 
 		// 딜레이
 		Sleep(10);
@@ -226,7 +226,7 @@ void reset()
 	// 최고 점수는 파일로 저장
 	FILE* file = fopen("score.dat", "rt");	// score.dat 파일을 연결
 
-	if (file)
+	if (file == 0)
 	{
 		best_score = 0;						// 파일이 없으면 그냥 최고 점수에 0을 넣는다.
 	}
@@ -327,9 +327,9 @@ void draw_map()
 	gotoxy(STATUS_X_ADJ, y + 12);					printf(" BEST SCORE : ");
 	gotoxy(STATUS_X_ADJ, y + 13);					printf("		%6d", best_score);
 						   
-	gotoxy(STATUS_X_ADJ, y + 15);					printf("  △   : Shift				SPACE : Hard Drop");
-	gotoxy(STATUS_X_ADJ, y + 16);					printf("◁  ▷ : Left / Right		  P   : Pause");
-	gotoxy(STATUS_X_ADJ, y + 17);					printf("  ▽   : Soft Drop			 ESC  : Quit");
+	gotoxy(STATUS_X_ADJ, y + 15);					printf("  △   : Shift			SPACE : Hard Drop");
+	gotoxy(STATUS_X_ADJ, y + 16);					printf("◁  ▷ : Left / Right	  P   : Pause");
+	gotoxy(STATUS_X_ADJ, y + 17);					printf("  ▽   : Soft Drop		 ESC  : Quit");
 }
 
 /// <summary>
