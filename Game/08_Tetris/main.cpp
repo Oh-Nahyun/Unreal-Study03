@@ -17,7 +17,7 @@
 #define RIGHT			77		// 우로 이동
 #define UP				72		// 회전
 #define DOWN			80		// 빠른 하단 이동 (Soft Move)
-#define SPACE			21		// 바로 바닥으로 순간 이동 (Hatd Move)
+#define SPACE			32		// 바로 바닥으로 순간 이동 (Hatd Move)
 #define p				112		// p키를 입력 (소문자)
 #define P				80		// P키를 입력 (대문자)
 #define ESC				27		// 게임 종료
@@ -140,13 +140,29 @@ int main()
 	while (true)
 	{
 		// 키 입력하기
-		check_key();
+		// 블록이 한칸씩 떨어지는 동안 5번 키 입력을 받을 수 있도록 제어하기! (난이도 설정 가능)
+		for (i = 0; i < 5; i++)
+		{
+			// 키 입력하기
+			check_key();
 
-		// 화면 그리기
-		draw_main();
+			// 화면 그리기
+			draw_main();
 
-		// 게임 속도 조절하기
-		Sleep(speed);
+			// 게임 속도 조절하기
+			Sleep(speed);
+
+			// 블록 회전 예외 처리하기
+			// 블록이 충돌 중인 경우, 추가로 이동 및 회전할 시간 제공..
+			//...
+
+			// 스페이스 바를 누른 경우, 바로 하드 드롭 처리하기
+			if (space_key_on == 1)
+			{
+				space_key_on = 0;
+				break;
+			}
+		}
 
 		// 블록 한칸 내리기
 		drop_block();
@@ -156,6 +172,8 @@ int main()
 		// 게임 오버 확인하기
 
 		// 새로운 블록 생성하기 (뉴블록 플래그가 있는 경우)
+		if (new_block_on == 1)
+			new_block();
 	}
 
 	return 0;
@@ -197,15 +215,23 @@ void title()
 		if (_kbhit())				// 키 입력이 있다면 무한 루프 종료
 			break;
 
-		//if (cnt % 200 == 0)			// 200으로 나누어 떨어질 때는 별 표시
-		//	gotoxy(x, y + 1);	printf("★");
-		//if ((cnt % 200 - 100) == 0)	// 위 카운트에서 100 카운트 간격으로 별 지우기
-		//	gotoxy(x + 2, y + 1);	printf("  ");
+		if (cnt % 200 == 0)			// 200으로 나누어 떨어질 때는 별 표시
+		{
+			gotoxy(x + 2, y + 1);	printf("★");
+		}
+		if ((cnt % 200 - 100) == 0)	// 위 카운트에서 100 카운트 간격으로 별 지우기
+		{
+			gotoxy(x + 2, y + 1);	printf("  ");
+		}
 
-		//if (cnt % 350 == 0)			// 350으로 나누어 떨어질 때는 별 표시
-		//	gotoxy(x + 13, y + 2);	printf("★");
-		//if ((cnt % 350 - 100) == 0)	// 위 카운트에서 100 카운트 간격으로 별 지우기
-		//	gotoxy(x + 13, y + 2);	printf("  ");
+		if (cnt % 350 == 0)			// 350으로 나누어 떨어질 때는 별 표시
+		{
+			gotoxy(x + 13, y + 2);	printf("★");
+		}
+		if ((cnt % 350 - 100) == 0)	// 위 카운트에서 100 카운트 간격으로 별 지우기
+		{
+			gotoxy(x + 13, y + 2);	printf("  ");
+		}
 
 		// 딜레이
 		Sleep(10);
@@ -299,9 +325,21 @@ void reset_main()
 /// <summary>
 /// 복사 게임판 초기화 함수 
 /// (main_cpy[][])
+/// (main_cpy를 초기화)
 /// </summary>
 void reset_main_cpy()
 {
+	int i, j;
+
+	// 게임판에서 게임에 사용하지 않는 숫자를 넣는다. (-1, 999)
+	// main_org 과 같은 숫자가 없게 하기 위함이다.
+	for (i = 0; i < MAIN_Y; i++)
+	{
+		for (j = 0; j < MAIN_X; j++)
+		{
+			main_cpy[i][j] = 100;
+		}
+	}
 }
 
 /// <summary>
@@ -327,9 +365,9 @@ void draw_map()
 	gotoxy(STATUS_X_ADJ, y + 12);					printf(" BEST SCORE : ");
 	gotoxy(STATUS_X_ADJ, y + 13);					printf("		%6d", best_score);
 						   
-	gotoxy(STATUS_X_ADJ, y + 15);					printf("  △   : Shift			SPACE : Hard Drop");
-	gotoxy(STATUS_X_ADJ, y + 16);					printf("◁  ▷ : Left / Right	  P   : Pause");
-	gotoxy(STATUS_X_ADJ, y + 17);					printf("  ▽   : Soft Drop		 ESC  : Quit");
+	gotoxy(STATUS_X_ADJ, y + 15);					printf("  △   : Shift          SPACE : Hard Drop");
+	gotoxy(STATUS_X_ADJ, y + 16);					printf("◁  ▷ : Left / Right	P   : Pause");
+	gotoxy(STATUS_X_ADJ, y + 17);					printf("  ▽   : Soft Drop       ESC  : Quit");
 }
 
 /// <summary>
@@ -340,7 +378,7 @@ void draw_main()
 	int i, j;
 
 	// 천장은 계속 새로운 블록이 지나가서 지워지면 새로 그려주기
-	for (j = 1; j < MAIN_X; j++)
+	for (j = 1; j < MAIN_X - 1; j++)
 	{
 		if (main_org[3][j] == EMPTY)
 			main_org[3][j] = CELLING;
@@ -461,20 +499,23 @@ void check_key()
 			switch (key)
 			{
 				case LEFT:		// 왼쪽으로 갈 수 있는지 확인 후 가능하다면 이동하기
-					move_block(LEFT);
+					if (check_crush(bx - 1, by, b_rotation) == true)
+						move_block(LEFT);
 					break;
 
 				case RIGHT:		// 오른쪽으로 갈 수 있는지 확인 후 가능하다면 이동하기
-					move_block(RIGHT);
+					if (check_crush(bx + 1, by, b_rotation) == true)
+						move_block(RIGHT);
 					break;
 
 				case DOWN:		// 아래쪽으로 갈 수 있는지 확인 후 가능하다면 이동하기
-					move_block(DOWN);
+					if (check_crush(bx, by + 1, b_rotation) == true)
+						move_block(DOWN);
 					break;
 
 				case UP:		// 블록 회전하기 (회전할 수 있는지 확인 후 가능하면 회전하기 or 바닥에 닿은 경우, 예외 처리)
 					// 회전할 수 있는지 확인하기! (check_crush()로 확인) (가능하다면 회전하기)
-					//if (check_crush(bx, by, (b_rotation + 1) % 4) == true)	// check!
+					if (check_crush(bx, by, (b_rotation + 1) % 4) == true)	// check!
 						move_block(UP);
 
 					// 예외 처리
@@ -491,17 +532,28 @@ void check_key()
 		{
 			switch (key)
 			{
-			case SPACE:
-				break;
-			case P:
-			case p:
-				break;
-			case ESC:
-				system("cls");
-				exit(0);			// 게임 종료
-				break;
-			default:
-				break;
+				case SPACE:
+					// 스페이스 키 플래그 처리하기
+					space_key_on = 1;
+
+					// 바닥에 닿을 때까지 이동시키기
+					while (crush_on == 0)
+					{
+						drop_block();
+
+						// 보너스 점수 추가 처리하기
+						//...
+					}
+					break;
+
+				case P:
+				case p:
+					break;
+
+				case ESC:
+					system("cls");
+					exit(0);			// 게임 종료
+					break;
 			}
 		}
 	}
@@ -518,20 +570,74 @@ void check_key()
 /// </summary>
 void drop_block()
 {
+	int i, j;
 
+	// 블록의 밑이 비어있으면 Crush Flag 끄기
+	if (crush_on && check_crush(bx, by + 1, b_rotation) == true)
+		crush_on = 0;
+
+	// 블록의 밑이 비어있지 않고, Crush Flag 가 켜져있는 경우
+	if (crush_on && check_crush(bx, by + 1, b_rotation) == false)
+	{
+		// 현재 조작중인 블록 굳히기
+		for (i = 0; i < MAIN_Y; i++)
+		{
+			for (j = 0; j < MAIN_Y; j++)
+			{
+				if (main_org[i][j] == ACTIVE_BLOCK)
+					main_org[i][j] == INACTIVE_BLOCK;
+			}
+		}
+
+		// Flag 끄기 (초기화)
+		crush_on = 0;
+
+		// 라인 확인하기
+		check_line();
+
+		// 새로운 블록 생성 Flag 켜기
+		new_block_on = 1;
+
+		// 함수 종료
+		return;
+	}
+
+	// 블록의 밑이 비어있으면 아래로 한 칸 이동하기
+	if (check_crush(bx, by + 1, b_rotation) == true)
+		move_block(DOWN);
+
+	// 블록의 밑으로 이동이 안되면 Crush Flag 켜기
+	if (check_crush(bx, by + 1, b_rotation) == false)
+		crush_on++;
 }
 
 /// <summary>
 /// 충돌 판단 함수 
 /// (rotation 시에 위치 보정)
+/// (지정된 좌표와 회전값으로 충돌이 있는지 검사한다.)
 /// </summary>
-/// <param name="bx"></param>
-/// <param name="by"></param>
-/// <param name="b_rotation"></param>
-/// <returns></returns>
+/// <param name="bx">블록의 x좌표</param>
+/// <param name="by">블록의 y좌표</param>
+/// <param name="b_rotation">블록의 회전값</param>
+/// <returns>블록의 충돌 여부</returns>
 int check_crush(int bx, int by, int b_rotation)
 {
-	return 0;
+	int i, j;
+
+	for (i = 0; i < 4; i++)
+	{
+		for (j = 0; j < 4; j++)
+		{
+			// 지정된 위치의 게임판(main_org)과 블록 모양(blocks)을 비교하여 겹치면 false 리턴!
+			if (blocks[b_type][b_rotation][i][j] == 1 && main_org[by + i][bx + j] > 0)
+			{
+				return false;
+			}
+		}
+	}
+
+	// 하나도 안겹치면 true 리턴
+	return true;
 }
 
 /// <summary>
@@ -666,6 +772,80 @@ void move_block(int dir)
 /// </summary>
 void check_line()
 {
+	int i, j, k, l;
+
+	int block_amount;		// 한 줄의 블록 갯수를 저장하는 변수
+	int combo = 0;			// 콤보 갯수를 저장하는 변수 (초기화)
+
+	// 보드판 확인하기
+	// 밑쪽 벽의 윗칸 (MAIN_Y - 2) 부터 천장 아래 (3) 까지 검사하기
+	for (i = MAIN_Y - 2; i > 3; )
+	{
+		// 블록의 갯수 저장 변수 초기화하기
+		block_amount = 0;
+
+		// 벽과 벽 사이의 블록 갯수 세기
+		for (j = 1; j < MAIN_X - 1; j++)
+		{
+			if (main_org[i][j] > 0)
+				block_amount++;
+		}
+
+		// 블록이 가득 찬 경우
+		if (block_amount == MAIN_X - 2)
+		{
+			// 레벨업 상태가 아닌 경우, (레벨업이 되면 자동 줄 삭제가 이루어진다.)
+			if (level_up_on == 0)
+			{
+				// 점수 추가하기
+				score += 100 * level;
+				
+				// 지운 줄 수의 카운트 증가하기
+				cnt++;
+
+				// 콤보 수 증가하기
+				combo++;
+			}
+
+			// 윗줄을 한칸씩 모두 내리기 (윗줄이 천장이 아닌 경우에만 실행!)
+			for (k = i; k > 1; k--)
+			{
+				for (l = 1; l < MAIN_X - 1; l++)
+				{
+					if (main_org[k - 1][l] != CELLING)
+						main_org[k][l] = main_org[k - 1][l];
+
+					if (main_org[k - 1][l] == CELLING)
+						main_org[k][l] = EMPTY;
+				}
+			}
+		}
+
+		// 블록이 가득 차지 않으면 다음 줄로 넘어가기
+		else
+		{
+			i--;
+		}
+	}
+
+	// 줄 삭제가 있는 경우, 점수와 레벨 목표 새로 표시하기
+	if (combo)
+	{
+		// 2콤보 이상인 경우, 보너스 및 메시지를 게임판에 띄웠다가 지우기
+		if (combo > 1)
+		{
+			gotoxy(MAIN_X_ADJ + (MAIN_X / 2) - 1, MAIN_Y_ADJ + by - 2);
+			printf("%d COMBO!", combo);
+			Sleep(500);
+
+			score += (combo * level * 100);
+			reset_main_cpy();					// 텍스트를 지우기 위해 main_cpy 를 초기화한다.
+		}
+		gotoxy(STATUS_X_ADJ, STATUS_Y_GOAL);
+		printf(" GOAL : %5d", (cnt <= 10) ? 10 - cnt : 0);
+		gotoxy(STATUS_X_ADJ, STATUS_Y_SCORE);
+		printf("        %6d", score);
+	}
 }
 
 /// <summary>
@@ -680,6 +860,43 @@ void check_level_up()
 /// </summary>
 void check_game_over()
 {
+	int i, j;
+
+	int x = 5;
+	int y = 5;
+
+	for (i = 1; i < MAIN_X - 2; i++)
+	{
+		// 천장에서 (위에서부터 세번째 줄) INACTIVE 블록이 생성되면 게임 오버!
+		if (main_org[3][i] > 0)
+		{
+			// 게임 오버 메시지 출력하기
+			gotoxy(x, y + 0);	printf("▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤");
+			gotoxy(x, y + 1);	printf("▤                                        ▤");
+			gotoxy(x, y + 2);	printf("▤     +----------------------------+     ▤");
+			gotoxy(x, y + 3);	printf("▤     |      G A M E   O V E R     |     ▤");
+			gotoxy(x, y + 4);	printf("▤     +----------------------------+     ▤");
+			gotoxy(x, y + 5);	printf("▤            YOUR SCORE : %6d            ▤", score);
+			gotoxy(x, y + 6);	printf("▤                                        ▤");
+			gotoxy(x, y + 7);	printf("▤       Press Any Key to Restart...      ▤");
+			gotoxy(x, y + 8);	printf("▤                                        ▤");
+			gotoxy(x, y + 9);	printf("▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤");
+
+			// 게임 점수 저장하기!
+			last_score = score;
+
+			// 최고 기록 갱신 시 처리하기
+			// ... file ...
+
+			// 딜레이
+			Sleep(1000);
+
+			// 키보드 입력하기 (대기 & 초기화)
+
+			// 초기화하기
+			reset();
+		}
+	}
 }
 
 /// <summary>
