@@ -168,8 +168,10 @@ int main()
 		drop_block();
 
 		// 레벨업 확인하기
+		check_level_up();
 
 		// 게임 오버 확인하기
+		check_game_over();
 
 		// 새로운 블록 생성하기 (뉴블록 플래그가 있는 경우)
 		if (new_block_on == 1)
@@ -281,7 +283,7 @@ void reset()
 
 	b_type_next = rand() % 7;	// 다음에 나올 블록 종류를 랜덤하게 생성하기
 	new_block();				// 새로운 블록 하나 만들기
-	//draw_main();				// Test..
+	//draw_main();				// test...
 }
 
 /// <summary>
@@ -520,6 +522,8 @@ void check_key()
 
 					// 예외 처리
 					// 바닥에 닿은 경우, 위쪽으로 한칸 띄워서 회전이 가능하다면 회전한다. (특수 동작)
+					else if (crush_on == 1 && check_crush(bx, by, (b_rotation + 1) % 4) == true)
+						move_block(100);
 					break;
 
 				default:
@@ -542,17 +546,20 @@ void check_key()
 						drop_block();
 
 						// 보너스 점수 추가 처리하기
-						//...
+						score += level;							// 보너스 하드드롭
+						gotoxy(STATUS_X_ADJ, STATUS_Y_SCORE);
+						printf("         %6d", score);			// 점수 표시 갱신하기
 					}
 					break;
 
 				case P:
 				case p:
+					pause();									// 일시 정지...
 					break;
 
 				case ESC:
 					system("cls");
-					exit(0);			// 게임 종료
+					exit(0);									// 게임 종료...
 					break;
 			}
 		}
@@ -760,6 +767,33 @@ void move_block(int dir)
 			break;
 
 		case 100:
+			// 블록이 바닥 혹은 다른 블록과 닿은 상태에서 한칸 위로 올려 회전이 가능한 경우, 특수 동작 허용!
+			// 현재 블록 지우기 (data)
+			for (i = 0; i < 4; i++)
+			{
+				for (j = 0; j < 4; j++)
+				{
+					if (blocks[b_type][b_rotation][i][j] == 1)
+					{
+						main_org[by + i][bx + j] = EMPTY;
+					}
+				}
+			}
+			// 회전 값을 1 증가시키기 (3이 넘어가면 0으로 되돌리기)
+			b_rotation = (b_rotation + 1) % 4;
+			// 회전한 블록 위치에 Active Block을 찍어주기 (data)
+			for (i = 0; i < 4; i++)
+			{
+				for (j = 0; j < 4; j++)
+				{
+					if (blocks[b_type][b_rotation][i][j] == 1)
+					{
+						main_org[by + i - 1][bx + j] = ACTIVE_BLOCK;
+					}
+				}
+			}
+			// 좌표값 이동하기
+			by--;
 			break;
 
 		default:
@@ -853,6 +887,92 @@ void check_line()
 /// </summary>
 void check_level_up()
 {
+	int i, j;
+
+	// 레벨업을 위한 줄 수 (테스트 1줄)
+	// int levelup_max = 1;		// test...
+	int levelup_max = 10;
+
+	// 레벨별로 10줄씩 업애야 레벨업 가능 -> 10줄 이상 없앤 경우
+	if (cnt >= levelup_max)
+	{
+		// 게임판을 한번 그리기 (refresh)
+		draw_main();
+
+		// 레벨업 플래그 띄우기
+		level_up_on = 1;
+
+		// 레벨 1 올리기
+		level += 1;
+
+		// 지운 줄 수 초기화하기
+		cnt = 0;
+
+		// (효과) 레벨업 글자 효과 찍기
+		for (i = 0; i < 4; i++)
+		{
+			gotoxy(MAIN_X_ADJ + (MAIN_X / 2) - 3, MAIN_Y_ADJ + 4);	printf("               ");
+			gotoxy(MAIN_X_ADJ + (MAIN_X / 2) - 3, MAIN_Y_ADJ + 6);	printf("               ");
+			Sleep(200);
+
+			gotoxy(MAIN_X_ADJ + (MAIN_X / 2) - 3, MAIN_Y_ADJ + 4);	printf("☆ LEVEL UP! ☆");
+			gotoxy(MAIN_X_ADJ + (MAIN_X / 2) - 3, MAIN_Y_ADJ + 6);	printf("★ LEVEL UP! ★");
+			Sleep(200);
+		}
+
+		// 텍스트를 모두 지우기 위해 초기화하기
+		reset_main_cpy();
+
+		// 레벨업 보상 (레벨만큼 아래줄을 지운다.) -> 커스텀 가능!
+		for (i = MAIN_Y - 2; i > MAIN_Y - 2 - (level - 1); i--)
+		{
+			for (j = 1; j < MAIN_X - 1; j++)
+			{
+				// 줄을 블록으로 모두 채우기
+				main_org[i][j] = INACTIVE_BLOCK;
+
+				// 별을 찍어준다. (보상 효과)
+				gotoxy(MAIN_X_ADJ + j, MAIN_Y_ADJ + i);
+				printf("★");
+				Sleep(20);
+			}
+		}
+
+		// 딜레이 (꾸미기 = 별을 보여주기 위해 잠시 딜레이)
+		Sleep(100);
+
+		// 블록으로 채운 것 지우기
+		check_line();
+
+		// (밸런스) 레벨별로 속도 조절하기
+		switch (level)
+		{
+			case 2:		speed = 50;		break;
+			case 3:		speed = 25;		break;
+			case 4:		speed = 10;		break;
+			case 5:		speed = 5;		break;
+			case 6:		speed = 4;		break;
+			case 7:		speed = 3;		break;
+			case 8:		speed = 2;		break;
+			case 9:		speed = 1;		break;
+			case 10:	speed = 0;		break;
+		}
+		// speed = 50;		// test speed...
+
+		// 레벨업 플래그 초기화하기 (꺼준다.)
+		level_up_on = 0;
+
+		// UI ------------------------------
+		
+		// 레벨 표시하기
+		gotoxy(STATUS_X_ADJ, STATUS_Y_LEVEL);
+		printf(" LEVEL : %5d", level);
+
+		// 다음 레벨 목표 표시하기
+		gotoxy(STATUS_X_ADJ, STATUS_Y_GOAL);
+		printf(" GOAL  : %5d", levelup_max - cnt);
+		// printf(" GOAL  : %5d", 10 - cnt);		// test...
+	}
 }
 
 /// <summary>
@@ -872,26 +992,47 @@ void check_game_over()
 		{
 			// 게임 오버 메시지 출력하기
 			gotoxy(x, y + 0);	printf("▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤");
-			gotoxy(x, y + 1);	printf("▤                                        ▤");
-			gotoxy(x, y + 2);	printf("▤     +----------------------------+     ▤");
-			gotoxy(x, y + 3);	printf("▤     |      G A M E   O V E R     |     ▤");
-			gotoxy(x, y + 4);	printf("▤     +----------------------------+     ▤");
-			gotoxy(x, y + 5);	printf("▤            YOUR SCORE : %6d            ▤", score);
-			gotoxy(x, y + 6);	printf("▤                                        ▤");
-			gotoxy(x, y + 7);	printf("▤       Press Any Key to Restart...      ▤");
-			gotoxy(x, y + 8);	printf("▤                                        ▤");
+			gotoxy(x, y + 1);	printf("▤                                    ▤");
+			gotoxy(x, y + 2);	printf("▤   +----------------------------+   ▤");
+			gotoxy(x, y + 3);	printf("▤   |      G A M E   O V E R     |   ▤");
+			gotoxy(x, y + 4);	printf("▤   +----------------------------+   ▤");
+			gotoxy(x, y + 5);	printf("▤          YOUR SCORE : %6d          ▤", score);
+			gotoxy(x, y + 6);	printf("▤                                    ▤");
+			gotoxy(x, y + 7);	printf("▤     Press Any Key to Restart...    ▤");
+			gotoxy(x, y + 8);	printf("▤                                    ▤");
 			gotoxy(x, y + 9);	printf("▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤");
 
 			// 게임 점수 저장하기!
 			last_score = score;
 
 			// 최고 기록 갱신 시 처리하기
-			// ... file ...
+			if (score > best_score)
+			{
+				FILE* file = fopen("score.dat", "wt");	// score.dat 파일 연결
+
+				gotoxy(x, y + 6);	printf("▤      ☆★  BEST SCORE!  ★☆       ▤");
+
+				if (file == 0)
+				{
+					gotoxy(0, 0);
+					printf("FILE ERROR! \"SCORE.DAT\"");
+				}
+				else
+				{
+					fprintf(file, "%d", score);
+					fclose(file);
+				}
+			}
 
 			// 딜레이
 			Sleep(1000);
 
 			// 키보드 입력하기 (대기 & 초기화)
+			while (_kbhit())
+			{
+				_getch();
+			}
+			key = _getch();
 
 			// 초기화하기
 			reset();
@@ -904,6 +1045,50 @@ void check_game_over()
 /// </summary>
 void pause()
 {
+	int i, j;
+
+	int x = 5;
+	int y = 5;
+
+	gotoxy(x, y + 0);	printf("▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤");
+	gotoxy(x, y + 1);	printf("▤                                    ▤");
+	gotoxy(x, y + 2);	printf("▤   +----------------------------+   ▤");
+	gotoxy(x, y + 3);	printf("▤   |          P A U S E         |   ▤");
+	gotoxy(x, y + 4);	printf("▤   +----------------------------+   ▤");
+	gotoxy(x, y + 5);	printf("▤                                    ▤");
+	gotoxy(x, y + 6);	printf("▤     Press Any Key to Resume...     ▤");
+	gotoxy(x, y + 7);	printf("▤                                    ▤");
+	gotoxy(x, y + 8);	printf("▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤");
+
+	// 키 입력까지 대기하기
+	_getch();
+
+	// 화면을 지우고 다시 그리기
+	system("cls");
+	reset_main_cpy();
+	draw_main();
+	draw_map();
+
+	// 다음 블록 다시 그리기 (-> 블록만 그리기)
+	// (게임 상태 표시판에 다음에 나올 블록 그리기 (4 * 3))
+	for (i = 0; i < 3; i++)
+	{
+		for (j = 0; j < 4; j++)
+		{
+			if (blocks[b_type_next][0][i][j] == 1)
+			{
+				// 예외로 바로 그리기..
+				gotoxy(STATUS_X_ADJ + 2 + j, i + 6);
+				printf("■");
+			}
+			else
+			{
+				gotoxy(STATUS_X_ADJ + 2 + j, i + 6);
+				printf("  ");
+			}
+		}
+	}
+
 }
 
 /// <summary>
