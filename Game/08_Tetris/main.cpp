@@ -585,7 +585,7 @@ void drop_block()
 			for (j = 0; j < MAIN_Y; j++)
 			{
 				if (main_org[i][j] == ACTIVE_BLOCK)
-					main_org[i][j] == INACTIVE_BLOCK;
+					main_org[i][j] = INACTIVE_BLOCK;
 			}
 		}
 
