@@ -312,7 +312,7 @@ void reset_main()
 	}
 
 	// 좌우 벽돌 만들기 : Wall
-	for (i = 0; i < MAIN_Y - 1; i++)
+	for (i = 1; i < MAIN_Y - 1; i++)
 	{
 		main_org[i][0] = WALL;				// 왼쪽
 		main_org[i][MAIN_X - 1] = WALL;		// 오른쪽
@@ -590,7 +590,7 @@ void drop_block()
 		// 현재 조작중인 블록 굳히기
 		for (i = 0; i < MAIN_Y; i++)
 		{
-			for (j = 0; j < MAIN_Y; j++)
+			for (j = 0; j < MAIN_X; j++)
 			{
 				if (main_org[i][j] == ACTIVE_BLOCK)
 					main_org[i][j] = INACTIVE_BLOCK;
